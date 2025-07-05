@@ -819,6 +819,139 @@ p {
 }
 
 /* ========================================
+   RECIPE CARD ENHANCEMENTS
+   ======================================== */
+
+.recipe-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+}
+
+.recipe-actions .btn {
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    transition: all var(--transition-fast);
+}
+
+.recipe-actions .btn:hover {
+    transform: scale(1.05);
+}
+
+.recipe-meta {
+    margin-top: var(--spacing-sm);
+    font-size: var(--font-size-xs);
+    opacity: 0.7;
+}
+
+/* ========================================
+   TOAST NOTIFICATIONS
+   ======================================== */
+
+.toast-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: var(--z-modal);
+    background: var(--glass-effect);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-lg);
+    transform: translateX(100%);
+    transition: transform var(--transition-normal);
+    max-width: 300px;
+    backdrop-filter: blur(10px);
+}
+
+.toast-notification.show {
+    transform: translateX(0);
+}
+
+.toast-content {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: var(--white);
+}
+
+.toast-success {
+    border-left: 4px solid var(--success-color);
+}
+
+.toast-error {
+    border-left: 4px solid var(--danger-color);
+}
+
+.toast-info {
+    border-left: 4px solid var(--info-color);
+}
+
+.toast-content i {
+    font-size: var(--font-size-lg);
+}
+
+.toast-success .toast-content i {
+    color: var(--success-color);
+}
+
+.toast-error .toast-content i {
+    color: var(--danger-color);
+}
+
+.toast-info .toast-content i {
+    color: var(--info-color);
+}
+
+/* ========================================
+   SEARCH ENHANCEMENTS
+   ======================================== */
+
+.search-section .btn {
+    margin: var(--spacing-xs);
+    transition: all var(--transition-fast);
+}
+
+.search-section .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* ========================================
+   BREADCRUMB NAVIGATION
+   ======================================== */
+
+.breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin-bottom: var(--spacing-md);
+}
+
+.breadcrumb-item {
+    color: var(--gray-400);
+}
+
+.breadcrumb-item.active {
+    color: var(--white);
+}
+
+.breadcrumb-link {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.breadcrumb-link:hover {
+    color: var(--white);
+    text-decoration: underline;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    color: var(--gray-500);
+    content: "›";
+}
+
+/* ========================================
    PRINT STYLES
    ======================================== */
 
@@ -826,7 +959,8 @@ p {
     .sidebar,
     .sidebar-toggle,
     .loading-screen,
-    .modal {
+    .modal,
+    .toast-notification {
         display: none !important;
     }
     
