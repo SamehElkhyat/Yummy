@@ -1347,8 +1347,8 @@ class RecipeFinderApp {
      */
     async showRecipeDetails(recipeId) {
         try {
-            const recipes = await this.api.searchByName('');
-            const recipe = recipes.find(r => r.idMeal === recipeId);
+            // Use the getRecipeById method to get the specific recipe
+            const recipe = await this.api.getRecipeById(recipeId);
             
             if (!recipe) {
                 throw new Error('Recipe not found');
@@ -1380,6 +1380,7 @@ class RecipeFinderApp {
 
             modal.show();
         } catch (error) {
+            console.error('Error showing recipe details:', error);
             showError('Failed to load recipe details. Please try again.');
         }
     }
