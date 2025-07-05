@@ -1,0 +1,191 @@
+{
+  "name": "recipe-finder-pro",
+  "version": "2.0.0",
+  "description": "A modern, professional recipe discovery application built with vanilla JavaScript, featuring responsive design and comprehensive culinary database integration.",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve .",
+    "dev": "live-server --port=8000 --open=/",
+    "build": "echo 'No build step required for vanilla JS project'",
+    "test": "echo 'Tests would be implemented with Jest'",
+    "lint": "echo 'Linting would be implemented with ESLint'",
+    "format": "echo 'Code formatting would be implemented with Prettier'",
+    "deploy": "echo 'Deployment script would be configured here'",
+    "analyze": "echo 'Bundle analysis would be implemented here'"
+  },
+  "keywords": [
+    "recipe",
+    "food",
+    "cooking",
+    "vanilla-javascript",
+    "responsive-design",
+    "api-integration",
+    "frontend",
+    "web-app",
+    "bootstrap",
+    "modern-javascript",
+    "es6",
+    "async-await",
+    "professional",
+    "portfolio"
+  ],
+  "author": {
+    "name": "Senior Frontend Developer",
+    "email": "developer@example.com",
+    "url": "https://yourportfolio.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/recipe-finder-pro.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/recipe-finder-pro/issues"
+  },
+  "homepage": "https://yourusername.github.io/recipe-finder-pro",
+  "devDependencies": {
+    "live-server": "^1.2.2",
+    "serve": "^14.2.0"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ],
+  "dependencies": {
+    "bootstrap": "^5.3.0",
+    "jquery": "^3.6.1"
+  },
+  "peerDependencies": {},
+  "optionalDependencies": {},
+  "bundledDependencies": [],
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ],
+  "cpu": [
+    "x64",
+    "arm64"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/sponsors/yourusername"
+  },
+  "man": "./README.md",
+  "directories": {
+    "lib": "js",
+    "doc": ".",
+    "example": ".",
+    "test": "tests"
+  },
+  "files": [
+    "index.html",
+    "css/",
+    "js/",
+    "img/",
+    "README.md",
+    "LICENSE"
+  ],
+  "config": {
+    "port": 8000,
+    "host": "localhost"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "es2021": true
+    },
+    "extends": [
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": "latest",
+      "sourceType": "module"
+    },
+    "rules": {
+      "indent": ["error", 2],
+      "linebreak-style": ["error", "unix"],
+      "quotes": ["error", "single"],
+      "semi": ["error", "always"],
+      "no-unused-vars": "warn",
+      "no-console": "warn"
+    }
+  },
+  "prettier": {
+    "semi": true,
+    "trailingComma": "es5",
+    "singleQuote": true,
+    "printWidth": 80,
+    "tabWidth": 2
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
+    "collectCoverageFrom": [
+      "js/**/*.js",
+      "!js/**/*.min.js"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.css": [
+      "prettier --write"
+    ],
+    "*.html": [
+      "prettier --write"
+    ]
+  },
+  "commitlint": {
+    "extends": ["@commitlint/config-conventional"]
+  },
+  "release": {
+    "branches": ["main"],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/changelog",
+      "@semantic-release/npm",
+      "@semantic-release/github"
+    ]
+  },
+  "volta": {
+    "node": "18.17.0",
+    "npm": "9.6.7"
+  },
+  "type": "module",
+  "exports": {
+    ".": "./index.html",
+    "./css": "./css/style.css",
+    "./js": "./js/index.js"
+  },
+  "imports": {
+    "#/*": "./*"
+  },
+  "sideEffects": false,
+  "module": "js/index.js",
+  "unpkg": "https://unpkg.com/recipe-finder-pro@2.0.0/",
+  "jsdelivr": "https://cdn.jsdelivr.net/npm/recipe-finder-pro@2.0.0/",
+  "cdn": {
+    "jsdelivr": "https://cdn.jsdelivr.net/npm/recipe-finder-pro@2.0.0/",
+    "unpkg": "https://unpkg.com/recipe-finder-pro@2.0.0/"
+  }
+} 
