@@ -44,7 +44,7 @@
   },
   "homepage": "https://yourusername.github.io/recipe-finder-pro",
   "devDependencies": {
-    "live-server": "^1.2.2",
+    "live-server": "^1.2.0",
     "serve": "^14.2.0"
   },
   "engines": {
@@ -61,8 +61,6 @@
     "bootstrap": "^5.3.0",
     "jquery": "^3.6.1"
   },
-  "peerDependencies": {},
-  "optionalDependencies": {},
   "bundledDependencies": [],
   "os": [
     "darwin",
@@ -113,10 +111,22 @@
       "sourceType": "module"
     },
     "rules": {
-      "indent": ["error", 2],
-      "linebreak-style": ["error", "unix"],
-      "quotes": ["error", "single"],
-      "semi": ["error", "always"],
+      "indent": [
+        "error",
+        2
+      ],
+      "linebreak-style": [
+        "error",
+        "unix"
+      ],
+      "quotes": [
+        "error",
+        "single"
+      ],
+      "semi": [
+        "error",
+        "always"
+      ],
       "no-unused-vars": "warn",
       "no-console": "warn"
     }
@@ -130,7 +140,9 @@
   },
   "jest": {
     "testEnvironment": "jsdom",
-    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setup.js"
+    ],
     "collectCoverageFrom": [
       "js/**/*.js",
       "!js/**/*.min.js"
@@ -155,10 +167,14 @@
     ]
   },
   "commitlint": {
-    "extends": ["@commitlint/config-conventional"]
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   },
   "release": {
-    "branches": ["main"],
+    "branches": [
+      "main"
+    ],
     "plugins": [
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
@@ -187,5 +203,6 @@
   "cdn": {
     "jsdelivr": "https://cdn.jsdelivr.net/npm/recipe-finder-pro@2.0.0/",
     "unpkg": "https://unpkg.com/recipe-finder-pro@2.0.0/"
-  }
-} 
+  },
+  "bundleDependencies": []
+}

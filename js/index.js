@@ -97,39 +97,105 @@ class Cache {
 }
 
 /**
- * Show loading indicator
+ * Show loading indicator with enhanced feedback
  */
 function showLoading() {
-    document.getElementById('loadingIndicator').style.display = 'block';
-    document.getElementById('errorMessage').style.display = 'none';
-    document.getElementById('noResults').style.display = 'none';
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const errorMessage = document.getElementById('errorMessage');
+    const noResults = document.getElementById('noResults');
+    const resultsGrid = document.getElementById('resultsGrid');
+    
+    // Hide other states
+    errorMessage.style.display = 'none';
+    noResults.style.display = 'none';
+    
+    // Show loading indicator
+    loadingIndicator.style.display = 'block';
+    
+    // Show skeleton loading for better UX
+    if (resultsGrid) {
+        resultsGrid.innerHTML = createSkeletonLoading();
+    }
+}
+
+/**
+ * Create skeleton loading cards
+ */
+function createSkeletonLoading() {
+    const skeletonCards = [];
+    for (let i = 0; i < 6; i++) {
+        skeletonCards.push(`
+            <div class="col-md-6 col-lg-4">
+                <div class="loading-skeleton">
+                    <div class="skeleton-image"></div>
+                    <div class="skeleton-content">
+                        <div class="skeleton-title"></div>
+                        <div class="skeleton-text"></div>
+                        <div class="skeleton-text"></div>
+                    </div>
+                </div>
+            </div>
+        `);
+    }
+    return skeletonCards.join('');
 }
 
 /**
  * Hide loading indicator
  */
 function hideLoading() {
-    document.getElementById('loadingIndicator').style.display = 'none';
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    loadingIndicator.style.display = 'none';
 }
 
 /**
- * Show error message
+ * Show loading with custom message
+ * @param {string} message - Custom loading message
+ */
+function showLoadingWithMessage(message) {
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const loadingText = loadingIndicator.querySelector('p');
+    
+    if (loadingText) {
+        loadingText.textContent = message;
+    }
+    
+    showLoading();
+}
+
+/**
+ * Show error message with enhanced styling
  * @param {string} message - Error message to display
  */
 function showError(message) {
     const errorElement = document.getElementById('errorMessage');
     const errorText = document.getElementById('errorText');
+    const resultsGrid = document.getElementById('resultsGrid');
+    
     errorText.textContent = message;
     errorElement.style.display = 'block';
     hideLoading();
+    
+    // Clear skeleton loading
+    if (resultsGrid) {
+        resultsGrid.innerHTML = '';
+    }
 }
 
 /**
- * Show no results message
+ * Show no results message with enhanced styling
  */
 function showNoResults() {
-    document.getElementById('noResults').style.display = 'block';
+    const noResults = document.getElementById('noResults');
+    const resultsGrid = document.getElementById('resultsGrid');
+    
+    noResults.style.display = 'block';
     hideLoading();
+    
+    // Clear skeleton loading
+    if (resultsGrid) {
+        resultsGrid.innerHTML = '';
+    }
 }
 
     /**
@@ -859,97 +925,124 @@ class RecipeFinderApp {
     }
 
     /**
-     * Load initial recipes
+     * Load initial recipes with enhanced loading
      */
     async loadInitialRecipes() {
         try {
-            showLoading();
+            showLoadingWithMessage('Loading featured recipes...');
             updatePageHeader('Recipe Finder Pro', 'Discover culinary excellence from around the world');
-            updateBreadcrumb('', false);
-            document.getElementById('searchSection').style.display = 'none';
+            document.getElementById('searchSection').style.display = 'block';
 
-            const recipes = await this.api.searchByName('');
-            this.displayRecipes(recipes);
+            // Load a selection of random recipes for the homepage
+            const recipes = await this.api.getRandomSelection();
+            if (recipes.length > 0) {
+                this.displayRecipes(recipes);
+            } else {
+                // Fallback to single random recipe
+                const randomRecipe = await this.api.getRandomRecipe();
+                if (randomRecipe) {
+                    this.displayRecipes([randomRecipe]);
+                } else {
+                    showNoResults();
+                }
+            }
         } catch (error) {
-            showError('Failed to load recipes. Please try again later.');
+            showError('Failed to load initial recipes. Please try again.');
         }
     }
 
     /**
-     * Handle name search
+     * Handle name search with enhanced loading
      * @param {string} query - Search query
      */
     async handleNameSearch(query) {
-        try {
-            if (!query.trim()) {
-                await this.loadInitialRecipes();
-                return;
-            }
+        if (!query.trim()) {
+            this.displayRecipes([]);
+            return;
+        }
 
-            showLoading();
+        try {
+            showLoadingWithMessage(`Searching for "${query}"...`);
             const recipes = await this.api.searchByName(query);
-            this.displayRecipes(recipes);
+            
+            if (recipes.length > 0) {
+                this.displayRecipes(recipes);
+                updatePageHeader(`Search Results for "${query}"`, `Found ${recipes.length} recipes`);
+            } else {
+                showNoResults();
+                updatePageHeader(`No Results for "${query}"`, 'Try a different search term');
+            }
         } catch (error) {
             showError('Search failed. Please try again.');
         }
     }
 
     /**
-     * Handle letter search
+     * Handle letter search with enhanced loading
      * @param {string} letter - First letter
      */
     async handleLetterSearch(letter) {
-        try {
-            if (!letter || letter.length !== 1) {
-                await this.loadInitialRecipes();
-                return;
-            }
+        if (!letter || letter.length !== 1) {
+            this.displayRecipes([]);
+            return;
+        }
 
-            showLoading();
+        try {
+            showLoadingWithMessage(`Finding recipes starting with "${letter.toUpperCase()}"...`);
             const recipes = await this.api.searchByLetter(letter);
-            this.displayRecipes(recipes);
+            
+            if (recipes.length > 0) {
+                this.displayRecipes(recipes);
+                updatePageHeader(`Recipes Starting with "${letter.toUpperCase()}"`, `Found ${recipes.length} recipes`);
+            } else {
+                showNoResults();
+                updatePageHeader(`No Recipes Starting with "${letter.toUpperCase()}"`, 'Try a different letter');
+            }
         } catch (error) {
             showError('Search failed. Please try again.');
         }
     }
 
     /**
-     * Handle recipe ID search
+     * Handle recipe ID search with enhanced loading
      * @param {string} id - Recipe ID
      */
     async handleRecipeIdSearch(id) {
-        try {
-            if (!id || id.trim() === '') {
-                await this.loadInitialRecipes();
-                return;
-            }
+        if (!id || isNaN(id)) {
+            this.displayRecipes([]);
+            return;
+        }
 
-            showLoading();
+        try {
+            showLoadingWithMessage(`Loading recipe #${id}...`);
             const recipe = await this.api.getRecipeById(id);
+            
             if (recipe) {
                 this.displayRecipes([recipe]);
+                updatePageHeader(`Recipe #${id}`, recipe.strMeal);
             } else {
                 showNoResults();
+                updatePageHeader(`Recipe #${id} Not Found`, 'Please check the recipe ID');
             }
         } catch (error) {
-            showError('Recipe not found. Please check the ID and try again.');
+            showError('Failed to load recipe. Please try again.');
         }
     }
 
     /**
-     * Load random recipe
+     * Load random recipe with enhanced loading
      */
     async loadRandomRecipe() {
         try {
-            showLoading();
-            updatePageHeader('Random Recipe', 'Discover something new and exciting');
+            showLoadingWithMessage('Finding a random recipe for you...');
+            updatePageHeader('Random Recipe', 'Discover something new');
             document.getElementById('searchSection').style.display = 'none';
 
             const recipe = await this.api.getRandomRecipe();
             if (recipe) {
                 this.displayRecipes([recipe]);
             } else {
-                showError('Failed to load random recipe. Please try again.');
+                showNoResults();
             }
         } catch (error) {
             showError('Failed to load random recipe. Please try again.');
@@ -957,32 +1050,40 @@ class RecipeFinderApp {
     }
 
     /**
-     * Load random selection of recipes
+     * Load random selection with enhanced loading
      */
     async loadRandomSelection() {
         try {
-            showLoading();
-            updatePageHeader('Random Selection', 'A curated selection of random recipes');
+            showLoadingWithMessage('Preparing a selection of random recipes...');
+            updatePageHeader('Random Selection', 'A curated mix of recipes');
             document.getElementById('searchSection').style.display = 'none';
 
             const recipes = await this.api.getRandomSelection();
-            this.displayRecipes(recipes);
+            if (recipes.length > 0) {
+                this.displayRecipes(recipes);
+            } else {
+                showNoResults();
+            }
         } catch (error) {
             showError('Failed to load random selection. Please try again.');
         }
     }
 
     /**
-     * Load latest recipes
+     * Load latest recipes with enhanced loading
      */
     async loadLatestRecipes() {
         try {
-            showLoading();
-            updatePageHeader('Latest Recipes', 'The newest additions to our collection');
+            showLoadingWithMessage('Loading latest recipes...');
+            updatePageHeader('Latest Recipes', 'Fresh additions to our collection');
             document.getElementById('searchSection').style.display = 'none';
 
             const recipes = await this.api.getLatestMeals();
-            this.displayRecipes(recipes);
+            if (recipes.length > 0) {
+                this.displayRecipes(recipes);
+            } else {
+                showNoResults();
+            }
         } catch (error) {
             showError('Failed to load latest recipes. Please try again.');
         }
@@ -1133,50 +1234,62 @@ class RecipeFinderApp {
     }
 
     /**
-     * Load categories
+     * Load categories with enhanced loading
      */
     async loadCategories() {
         try {
-            showLoading();
+            showLoadingWithMessage('Loading recipe categories...');
             updatePageHeader('Recipe Categories', 'Browse recipes by category');
             document.getElementById('searchSection').style.display = 'none';
 
             const categories = await this.api.getCategories();
-            this.displayCategories(categories);
+            if (categories.length > 0) {
+                this.displayCategories(categories);
+            } else {
+                showNoResults();
+            }
         } catch (error) {
-            showError('Failed to load categories. Please try again later.');
+            showError('Failed to load categories. Please try again.');
         }
     }
 
     /**
-     * Load areas
+     * Load areas with enhanced loading
      */
     async loadAreas() {
         try {
-            showLoading();
-            updatePageHeader('Cuisine Areas', 'Explore recipes from different regions');
+            showLoadingWithMessage('Loading cuisine areas...');
+            updatePageHeader('Cuisine Areas', 'Explore recipes by region');
             document.getElementById('searchSection').style.display = 'none';
 
             const areas = await this.api.getAreas();
-            this.displayAreas(areas);
+            if (areas.length > 0) {
+                this.displayAreas(areas);
+            } else {
+                showNoResults();
+            }
         } catch (error) {
-            showError('Failed to load areas. Please try again later.');
+            showError('Failed to load cuisine areas. Please try again.');
         }
     }
 
     /**
-     * Load ingredients
+     * Load ingredients with enhanced loading
      */
     async loadIngredients() {
         try {
-            showLoading();
+            showLoadingWithMessage('Loading ingredients...');
             updatePageHeader('Ingredients', 'Find recipes by ingredient');
             document.getElementById('searchSection').style.display = 'none';
 
             const ingredients = await this.api.getIngredients();
-            this.displayIngredients(ingredients);
+            if (ingredients.length > 0) {
+                this.displayIngredients(ingredients);
+            } else {
+                showNoResults();
+            }
         } catch (error) {
-            showError('Failed to load ingredients. Please try again later.');
+            showError('Failed to load ingredients. Please try again.');
         }
     }
 
@@ -1223,12 +1336,12 @@ class RecipeFinderApp {
     }
 
     /**
-     * Load recipes by category
+     * Load recipes by category with enhanced loading
      * @param {string} category - Category name
      */
     async loadRecipesByCategory(category) {
         try {
-            showLoading();
+            showLoadingWithMessage(`Loading ${category} recipes...`);
             updatePageHeader(`${category} Recipes`, `Discover delicious ${category.toLowerCase()} recipes`);
             document.getElementById('searchSection').style.display = 'none';
 
@@ -1271,12 +1384,12 @@ class RecipeFinderApp {
     }
 
     /**
-     * Load recipes by area
+     * Load recipes by area with enhanced loading
      * @param {string} area - Area name
      */
     async loadRecipesByArea(area) {
         try {
-            showLoading();
+            showLoadingWithMessage(`Loading ${area} cuisine recipes...`);
             updatePageHeader(`${area} Cuisine`, `Explore authentic ${area.toLowerCase()} recipes`);
             document.getElementById('searchSection').style.display = 'none';
 
@@ -1319,12 +1432,12 @@ class RecipeFinderApp {
     }
 
     /**
-     * Load recipes by ingredient
+     * Load recipes by ingredient with enhanced loading
      * @param {string} ingredient - Ingredient name
      */
     async loadRecipesByIngredient(ingredient) {
         try {
-            showLoading();
+            showLoadingWithMessage(`Finding recipes with ${ingredient}...`);
             updatePageHeader(`Recipes with ${ingredient}`, `Discover recipes containing ${ingredient.toLowerCase()}`);
             document.getElementById('searchSection').style.display = 'none';
 
@@ -1482,18 +1595,52 @@ class RecipeFinderApp {
 
 // Wait for DOM to be ready
 document.addEventListener('DOMContentLoaded', () => {
-    // Hide loading screen after a short delay
-    setTimeout(() => {
-        const loadingScreen = document.getElementById('loading');
-        if (loadingScreen) {
-            loadingScreen.style.opacity = '0';
-            loadingScreen.style.visibility = 'hidden';
-            document.body.style.overflow = 'auto';
-        }
-    }, 1500);
-
-    // Initialize the application
-    window.recipeFinderApp = new RecipeFinderApp();
+    // Enhanced loading screen with progress feedback
+    const loadingScreen = document.getElementById('loading');
+    const progressBar = document.querySelector('.loading-progress-bar');
+    const loadingText = document.querySelector('.loading-content p');
+    
+    if (loadingScreen) {
+        // Simulate loading progress
+        let progress = 0;
+        const progressInterval = setInterval(() => {
+            progress += Math.random() * 15;
+            if (progress > 100) progress = 100;
+            
+            if (progressBar) {
+                progressBar.style.width = `${progress}%`;
+            }
+            
+            // Update loading text based on progress
+            if (loadingText) {
+                if (progress < 30) {
+                    loadingText.textContent = 'Initializing application...';
+                } else if (progress < 60) {
+                    loadingText.textContent = 'Loading recipe database...';
+                } else if (progress < 90) {
+                    loadingText.textContent = 'Preparing interface...';
+                } else {
+                    loadingText.textContent = 'Almost ready...';
+                }
+            }
+            
+            if (progress >= 100) {
+                clearInterval(progressInterval);
+                
+                // Fade out loading screen
+                setTimeout(() => {
+                    loadingScreen.style.opacity = '0';
+                    loadingScreen.style.visibility = 'hidden';
+                    document.body.style.overflow = 'auto';
+                    
+                    // Initialize the application after loading screen is hidden
+                    setTimeout(() => {
+                        window.recipeFinderApp = new RecipeFinderApp();
+                    }, 300);
+                }, 500);
+            }
+        }, 100);
+    }
 });
 
 // Handle window resize for responsive sidebar
